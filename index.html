@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avataaars Custom Element Showcase</title>
+  
+  <!-- Modern Premium Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.07);
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --accent-color: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      --hover-gradient: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem;
+    }
+
+    /* Ambient background glow objects */
+    .glow-circle {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0,0,0,0) 70%);
+      top: 10%;
+      left: 10%;
+      z-index: -1;
+      filter: blur(40px);
+    }
+    .glow-circle-2 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(0,0,0,0) 70%);
+      bottom: 10%;
+      right: 10%;
+      z-index: -1;
+      filter: blur(50px);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      max-width: 800px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    p.subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    @media (min-width: 900px) {
+      .main-layout {
+        grid-template-columns: 350px 1fr;
+      }
+    }
+
+    /* Controls Panel */
+    .control-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 2rem;
+      align-self: start;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .panel-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .control-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: white;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    select:focus, input[type="text"]:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: white;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--hover-gradient);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.07);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-1px);
+    }
+
+    /* Showcase Grid */
+    .showcase-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .showcase-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--accent-gradient);
+      border-radius: 2px;
+    }
+
+    .interactive-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    @media (min-width: 600px) {
+      .interactive-display {
+        flex-direction: row;
+        justify-content: space-around;
+      }
+    }
+
+    .avatar-wrapper {
+      width: 264px;
+      height: 280px;
+      position: relative;
+      background: rgba(0,0,0,0.2);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      overflow: hidden;
+      padding: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .avatar-wrapper:hover {
+      transform: scale(1.02);
+    }
+
+    .avatar-meta {
+      flex: 1;
+      max-width: 500px;
+    }
+
+    .meta-card {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      padding: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .meta-card h3 {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .hash-display {
+      font-family: monospace;
+      font-size: 1.15rem;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      margin-bottom: 1rem;
+      word-break: break-all;
+    }
+
+    /* Static, Pieces and Grid sections */
+    .grid-three-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+
+    .grid-card {
+      background: rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .grid-card:hover {
+      background: rgba(0,0,0,0.25);
+      border-color: rgba(99, 102, 241, 0.2);
+      transform: translateY(-4px);
+    }
+
+    .grid-card .avatar-box {
+      width: 150px;
+      height: 160px;
+      margin-bottom: 1.25rem;
+    }
+
+    .grid-card h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .grid-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* Toggle switch style */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.03);
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .toggle-container span {
+      font-size: 0.95rem;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255,255,255,0.15);
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background: var(--accent-gradient);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+  </style>
+
+  <!-- Import the Custom Element as an ES module -->
+  <script type="module" src="./dist/avataaars.min.js"></script>
+</head>
+<body>
+  <div class="glow-circle"></div>
+  <div class="glow-circle-2"></div>
+
+  <header>
+    <h1>Avataaars Web Component</h1>
+    <p class="subtitle">A dependency-free custom HTML element rendering beautiful custom avatars recursively from the compiled SVG library using native Shadow DOM and ES Modules.</p>
+  </header>
+
+  <main class="main-layout">
+    <!-- Controls Panel -->
+    <section class="control-panel">
+      <div class="panel-title">
+        <span>Avatar Settings</span>
+        <button id="btn-random-panel" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 8px;">🎲 Random</button>
+      </div>
+      
+      <div class="control-group">
+        <label for="sel-backdropType">Backdrop Style</label>
+        <select id="sel-backdropType">
+          <option value="Circle">Circle</option>
+          <option value="Diamond">Diamond</option>
+          <option value="NoBackdrop">No Backdrop</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-backdropColor">Backdrop Color</label>
+        <select id="sel-backdropColor"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-skinColor">Skin Tone</label>
+        <select id="sel-skinColor"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-topType">Hair / Headwear</label>
+        <select id="sel-topType"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-hairColor">Hair Color</label>
+        <select id="sel-hairColor"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-hatColor">Hat Color</label>
+        <select id="sel-hatColor"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-clotheType">Clothing</label>
+        <select id="sel-clotheType"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-clotheColor">Fabric Color</label>
+        <select id="sel-clotheColor"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-graphicType">Graphic on Shirt</label>
+        <select id="sel-graphicType"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-eyeType">Eyes</label>
+        <select id="sel-eyeType"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-eyebrowType">Eyebrows</label>
+        <select id="sel-eyebrowType"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-mouthType">Mouth</label>
+        <select id="sel-mouthType"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-facialHairType">Facial Hair</label>
+        <select id="sel-facialHairType"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-facialHairColor">Facial Hair Color</label>
+        <select id="sel-facialHairColor"></select>
+      </div>
+
+      <div class="control-group">
+        <label for="sel-accessoriesType">Accessories</label>
+        <select id="sel-accessoriesType"></select>
+      </div>
+
+      <div class="control-group toggle-container">
+        <span>Enable Animations</span>
+        <label class="switch">
+          <input type="checkbox" id="chk-animated" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Showcase Grid -->
+    <div class="showcase-grid">
+      
+      <!-- Interactive Customizer Section -->
+      <section class="showcase-section">
+        <h2 class="section-title">Interactive Customizer</h2>
+        <div class="interactive-display">
+          <div class="avatar-wrapper">
+            <!-- Our HTML Custom Element! -->
+            <avataaars-avatar id="interactive-avatar" animated></avataaars-avatar>
+          </div>
+          
+          <div class="avatar-meta">
+            <div class="meta-card">
+              <h3>Observed Serialization Hash</h3>
+              <div class="hash-display" id="interactive-hash">---</div>
+              <div class="control-group" style="margin-top: 1rem;">
+                <label for="txt-hash-input">Apply Hash Directly</label>
+                <input type="text" id="txt-hash-input" placeholder="Enter 15-character base62 hash">
+              </div>
+              <div class="button-row">
+                <button id="btn-copy-hash" class="btn btn-secondary">Copy Config Hash</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Grid of Element Use Cases -->
+      <section class="showcase-section">
+        <h2 class="section-title">Use Case Variations</h2>
+        <div class="grid-three-col">
+          
+          <!-- Static / Non-Animated -->
+          <div class="grid-card">
+            <div class="avatar-box">
+              <avataaars-avatar 
+                top-type="LongHairBigHair"
+                hair-color="PastelPink"
+                clothe-type="GraphicShirt"
+                graphic-type="Pizza"
+                eye-type="Hearts"
+                mouth-type="Eating"
+                backdrop-type="Circle"
+                backdrop-color="PastelOrange"
+                skin-color="Pale"
+              ></avataaars-avatar>
+            </div>
+            <h4>Static Avatar</h4>
+            <p>Renders standard inline graphics without triggering CSS animation keyframes.</p>
+          </div>
+
+          <!-- Hash Configuration -->
+          <div class="grid-card">
+            <div class="avatar-box">
+              <avataaars-avatar hash="18K2934D2165037" animated></avataaars-avatar>
+            </div>
+            <h4>Render from Hash</h4>
+            <p>Configured using a single compact 15-character Base-62 hash attribute.</p>
+          </div>
+
+          <!-- Random Generation -->
+          <div class="grid-card">
+            <div class="avatar-box">
+              <avataaars-avatar id="random-avatar-card" animated></avataaars-avatar>
+            </div>
+            <h4>Dynamic Randomizer</h4>
+            <p>Randomly coordinates styling attributes (avoiding color clashes).</p>
+            <button id="btn-rand-card" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.4rem 1rem; font-size: 0.8rem;">🎲 Reroll</button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Avatar Piece Elements Showcase -->
+      <section class="showcase-section">
+        <h2 class="section-title">Sub-components (&lt;avataaars-piece&gt;)</h2>
+        <div class="grid-three-col" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+          
+          <div class="grid-card">
+            <div style="width: 100px; height: 100px;">
+              <avataaars-piece piece-type="top" top-type="WinterHat3" hat-color="Pink" hair-color="Blonde"></avataaars-piece>
+            </div>
+            <h5 style="margin-top: 0.5rem; font-weight: 600;">Hat Piece</h5>
+          </div>
+
+          <div class="grid-card">
+            <div style="width: 100px; height: 100px;">
+              <avataaars-piece piece-type="eyes" eye-type="Surprised"></avataaars-piece>
+            </div>
+            <h5 style="margin-top: 0.5rem; font-weight: 600;">Eyes Piece</h5>
+          </div>
+
+          <div class="grid-card">
+            <div style="width: 100px; height: 100px;">
+              <avataaars-piece piece-type="clothe" clothe-type="Hoodie" clothe-color="Red"></avataaars-piece>
+            </div>
+            <h5 style="margin-top: 0.5rem; font-weight: 600;">Clothe Piece</h5>
+          </div>
+
+          <div class="grid-card">
+            <div style="width: 100px; height: 100px;">
+              <avataaars-piece piece-type="mouth" mouth-type="Smile"></avataaars-piece>
+            </div>
+            <h5 style="margin-top: 0.5rem; font-weight: 600;">Mouth Piece</h5>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script type="module">
+    import {
+      BACKDROP_TYPES,
+      BACKDROP_COLORS,
+      TOP_TYPES,
+      HAIR_COLORS,
+      HAT_COLORS,
+      FACIAL_HAIR_TYPES,
+      FACIAL_HAIR_COLORS,
+      CLOTHE_TYPES,
+      CLOTHE_COLORS,
+      ACCESSORIES_TYPES,
+      GRAPHIC_TYPES,
+      EYE_TYPES,
+      EYEBROW_TYPES,
+      MOUTH_TYPES,
+      SKIN_COLORS,
+      generateRandomAvataarProps,
+      getAvatarHash
+    } from './dist/avataaars.min.js'
+
+    // Populate all option select menus
+    const selectMappings = {
+      'sel-backdropType': BACKDROP_TYPES,
+      'sel-backdropColor': BACKDROP_COLORS,
+      'sel-skinColor': SKIN_COLORS,
+      'sel-topType': TOP_TYPES,
+      'sel-hairColor': HAIR_COLORS,
+      'sel-hatColor': HAT_COLORS,
+      'sel-clotheType': CLOTHE_TYPES,
+      'sel-clotheColor': CLOTHE_COLORS,
+      'sel-graphicType': GRAPHIC_TYPES,
+      'sel-eyeType': EYE_TYPES,
+      'sel-eyebrowType': EYEBROW_TYPES,
+      'sel-mouthType': MOUTH_TYPES,
+      'sel-facialHairType': FACIAL_HAIR_TYPES,
+      'sel-facialHairColor': FACIAL_HAIR_COLORS,
+      'sel-accessoriesType': ACCESSORIES_TYPES
+    }
+
+    Object.entries(selectMappings).forEach(([id, list]) => {
+      const select = document.getElementById(id)
+      list.forEach(val => {
+        const opt = document.createElement('option')
+        opt.value = opt.textContent = val
+        select.appendChild(opt)
+      })
+    })
+
+    const interactiveAvatar = document.getElementById('interactive-avatar')
+    const hashDisplay = document.getElementById('interactive-hash')
+    const hashInput = document.getElementById('txt-hash-input')
+    const chkAnimated = document.getElementById('chk-animated')
+
+    // Read options from select menus and apply to the element
+    function applySelectedOptions() {
+      const currentConfig = {}
+      
+      Object.keys(selectMappings).forEach(id => {
+        const optionKey = id.replace('sel-', '')
+        const select = document.getElementById(id)
+        
+        // Property setter test
+        interactiveAvatar[optionKey] = select.value
+        currentConfig[optionKey] = select.value
+      })
+
+      // Update serialization hash
+      const hash = getAvatarHash(currentConfig)
+      hashDisplay.textContent = hash
+    }
+
+    // Set select controls to match element's current state
+    function updateControlsFromElement() {
+      Object.keys(selectMappings).forEach(id => {
+        const optionKey = id.replace('sel-', '')
+        const select = document.getElementById(id)
+        select.value = interactiveAvatar[optionKey]
+      })
+
+      // Update serialization hash
+      const hash = getAvatarHash(interactiveAvatar.getOptions())
+      hashDisplay.textContent = hash
+    }
+
+    // Attach event listeners to all select menus
+    Object.keys(selectMappings).forEach(id => {
+      document.getElementById(id).addEventListener('change', () => {
+        // Clear hash input since we are customizing manually
+        hashInput.value = ''
+        interactiveAvatar.removeAttribute('hash')
+        applySelectedOptions()
+      })
+    })
+
+    // Animation Toggle
+    chkAnimated.addEventListener('change', (e) => {
+      interactiveAvatar.animated = e.target.checked
+    })
+
+    // Randomizer
+    function randomizeInteractive() {
+      const randomProps = generateRandomAvataarProps()
+      Object.entries(randomProps).forEach(([key, val]) => {
+        interactiveAvatar[key] = val
+      })
+      updateControlsFromElement()
+      hashInput.value = ''
+    }
+
+    document.getElementById('btn-random-panel').addEventListener('click', randomizeInteractive)
+
+    // Copy Hash
+    document.getElementById('btn-copy-hash').addEventListener('click', () => {
+      navigator.clipboard.writeText(hashDisplay.textContent)
+      alert('Config hash copied to clipboard: ' + hashDisplay.textContent)
+    })
+
+    // Apply Hash Input
+    hashInput.addEventListener('input', (e) => {
+      const hash = e.target.value.trim()
+      if (hash.length === 15) {
+        interactiveAvatar.hash = hash
+        updateControlsFromElement()
+      }
+    })
+
+    // Reroll Card Randomizer
+    const randomCard = document.getElementById('random-avatar-card')
+    function randomizeCard() {
+      const randomProps = generateRandomAvataarProps()
+      Object.entries(randomProps).forEach(([key, val]) => {
+        randomCard[key] = val
+      })
+    }
+    document.getElementById('btn-rand-card').addEventListener('click', randomizeCard)
+
+    // Initial setups
+    randomizeInteractive()
+    randomizeCard()
+  </script>
+</body>
+</html>
