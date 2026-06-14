@@ -572,9 +572,29 @@
             <div class="avatar-box">
               <avataaars-avatar id="random-avatar-card" animated></avataaars-avatar>
             </div>
-            <h4>Dynamic Randomizer</h4>
-            <p>Randomly coordinates styling attributes (avoiding color clashes).</p>
+            <h4>Dynamic Randomizer (JS)</h4>
+            <p>Randomly coordinates styling attributes via JS (avoiding color clashes).</p>
             <button id="btn-rand-card" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.4rem 1rem; font-size: 0.8rem;">🎲 Reroll</button>
+          </div>
+
+          <!-- Declarative Randomize Attribute -->
+          <div class="grid-card">
+            <div class="avatar-box">
+              <avataaars-avatar randomize animated></avataaars-avatar>
+            </div>
+            <h4>randomize Attribute</h4>
+            <p>Randomly assigns unspecified properties declaratively on initialization.</p>
+          </div>
+
+          <!-- Declarative Sub-component -->
+          <div class="grid-card">
+            <div class="avatar-box">
+              <avataaars-avatar animated>
+                <avataaars-randomize></avataaars-randomize>
+              </avataaars-avatar>
+            </div>
+            <h4>&lt;avataaars-randomize&gt;</h4>
+            <p>Enables randomization dynamically via a nested sub-element.</p>
           </div>
 
         </div>
