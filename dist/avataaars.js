@@ -905,7 +905,7 @@ var styleContent = '@keyframes blinkeyes {\n  0% {\n    transform: scale(1, 1);\
 var AvataaarsAvatar = class extends HTMLElement {
   static get observedAttributes() {
     const attrs = OPTIONS_KEYS.map((key) => key.replace(/([A-Z])/g, "-$1").toLowerCase());
-    return [...attrs, "hash", "animated", "uid", "animation-delay"];
+    return [...attrs, "hash", "animated", "uid", "animation-delay", "randomize"];
   }
   constructor() {
     super();
@@ -913,6 +913,7 @@ var AvataaarsAvatar = class extends HTMLElement {
     this._options = {};
     this._generatedUid = uniqueId("avatar-");
     this._generatedDelay = `${Math.random() * 5}s`;
+    this._randomizedProps = {};
   }
   connectedCallback() {
     this.render();
@@ -963,12 +964,28 @@ var AvataaarsAvatar = class extends HTMLElement {
       this.removeAttribute("animation-delay");
     }
   }
+  get randomize() {
+    const attr = this.getAttribute("randomize");
+    const hasSubComponent = this.querySelector("avataaars-randomize") !== null;
+    return attr !== "false" && attr !== null || hasSubComponent;
+  }
+  set randomize(val) {
+    if (val) {
+      this.setAttribute("randomize", "");
+    } else {
+      this.removeAttribute("randomize");
+    }
+  }
   getOptions() {
     const options = {};
     const currentHash = this.hash;
     if (currentHash) {
       const hashConfig = getAvatarConfigFromHash(currentHash);
       Object.assign(options, hashConfig);
+    }
+    const isRandomizeEnabled = this.randomize;
+    if (!isRandomizeEnabled) {
+      this._randomizedProps = {};
     }
     OPTIONS_KEYS.forEach((key) => {
       const attrName = key.replace(/([A-Z])/g, "-$1").toLowerCase();
@@ -977,7 +994,17 @@ var AvataaarsAvatar = class extends HTMLElement {
       } else if (this.hasAttribute(attrName)) {
         options[key] = this.getAttribute(attrName);
       } else if (options[key] === void 0) {
-        options[key] = DEFAULT_AVATAR_PROPS[key];
+        if (isRandomizeEnabled) {
+          if (this._randomizedProps[key] === void 0) {
+            const list = getOptionList(key);
+            if (list && list.length > 0) {
+              this._randomizedProps[key] = list[Math.floor(Math.random() * list.length)];
+            }
+          }
+          options[key] = this._randomizedProps[key];
+        } else {
+          options[key] = DEFAULT_AVATAR_PROPS[key];
+        }
       }
     });
     return options;
@@ -1120,13 +1147,14 @@ OPTIONS_KEYS.forEach((key) => {
 var AvataaarsPiece = class extends HTMLElement {
   static get observedAttributes() {
     const attrs = OPTIONS_KEYS.map((key) => key.replace(/([A-Z])/g, "-$1").toLowerCase());
-    return [...attrs, "piece-type", "piece-size", "view-box", "uid"];
+    return [...attrs, "piece-type", "piece-size", "view-box", "uid", "randomize"];
   }
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
     this._options = {};
     this._generatedUid = uniqueId("avatar-");
+    this._randomizedProps = {};
   }
   connectedCallback() {
     this.render();
@@ -1176,8 +1204,24 @@ var AvataaarsPiece = class extends HTMLElement {
       this.removeAttribute("uid");
     }
   }
+  get randomize() {
+    const attr = this.getAttribute("randomize");
+    const hasSubComponent = this.querySelector("avataaars-randomize") !== null;
+    return attr !== "false" && attr !== null || hasSubComponent;
+  }
+  set randomize(val) {
+    if (val) {
+      this.setAttribute("randomize", "");
+    } else {
+      this.removeAttribute("randomize");
+    }
+  }
   getOptions() {
     const options = {};
+    const isRandomizeEnabled = this.randomize;
+    if (!isRandomizeEnabled) {
+      this._randomizedProps = {};
+    }
     OPTIONS_KEYS.forEach((key) => {
       const attrName = key.replace(/([A-Z])/g, "-$1").toLowerCase();
       if (this._options[key] !== void 0) {
@@ -1185,7 +1229,17 @@ var AvataaarsPiece = class extends HTMLElement {
       } else if (this.hasAttribute(attrName)) {
         options[key] = this.getAttribute(attrName);
       } else {
-        options[key] = DEFAULT_AVATAR_PROPS[key];
+        if (isRandomizeEnabled) {
+          if (this._randomizedProps[key] === void 0) {
+            const list = getOptionList(key);
+            if (list && list.length > 0) {
+              this._randomizedProps[key] = list[Math.floor(Math.random() * list.length)];
+            }
+          }
+          options[key] = this._randomizedProps[key];
+        } else {
+          options[key] = DEFAULT_AVATAR_PROPS[key];
+        }
       }
     });
     return options;
@@ -1313,6 +1367,18 @@ OPTIONS_KEYS.forEach((key) => {
     configurable: true
   });
 });
+var AvataaarsRandomize = class extends HTMLElement {
+  connectedCallback() {
+    if (this.parentElement && typeof this.parentElement.render === "function") {
+      this.parentElement.render();
+    }
+  }
+  disconnectedCallback() {
+    if (this.parentElement && typeof this.parentElement.render === "function") {
+      this.parentElement.render();
+    }
+  }
+};
 if (typeof window !== "undefined" && window.customElements) {
   if (!window.customElements.get("avataaars-avatar")) {
     window.customElements.define("avataaars-avatar", AvataaarsAvatar);
@@ -1320,11 +1386,15 @@ if (typeof window !== "undefined" && window.customElements) {
   if (!window.customElements.get("avataaars-piece")) {
     window.customElements.define("avataaars-piece", AvataaarsPiece);
   }
+  if (!window.customElements.get("avataaars-randomize")) {
+    window.customElements.define("avataaars-randomize", AvataaarsRandomize);
+  }
 }
 export {
   ACCESSORIES_TYPES,
   AvataaarsAvatar,
   AvataaarsPiece,
+  AvataaarsRandomize,
   BACKDROP_COLORS,
   BACKDROP_TYPES,
   CLOTHE_COLORS,

@@ -87,7 +87,7 @@ const cssUrl = new URL('./animations.css', import.meta.url).href
 export class AvataaarsAvatar extends HTMLElement {
   static get observedAttributes() {
     const attrs = OPTIONS_KEYS.map(key => key.replace(/([A-Z])/g, '-$1').toLowerCase())
-    return [...attrs, 'hash', 'animated', 'uid', 'animation-delay']
+    return [...attrs, 'hash', 'animated', 'uid', 'animation-delay', 'randomize']
   }
 
   constructor() {
@@ -96,6 +96,7 @@ export class AvataaarsAvatar extends HTMLElement {
     this._options = {}
     this._generatedUid = uniqueId('avatar-')
     this._generatedDelay = `${Math.random() * 5}s`
+    this._randomizedProps = {}
   }
 
   connectedCallback() {
@@ -156,6 +157,20 @@ export class AvataaarsAvatar extends HTMLElement {
     }
   }
 
+  get randomize() {
+    const attr = this.getAttribute('randomize')
+    const hasSubComponent = this.querySelector('avataaars-randomize') !== null
+    return (attr !== 'false' && attr !== null) || hasSubComponent
+  }
+
+  set randomize(val) {
+    if (val) {
+      this.setAttribute('randomize', '')
+    } else {
+      this.removeAttribute('randomize')
+    }
+  }
+
   getOptions() {
     const options = {}
     const currentHash = this.hash
@@ -163,6 +178,11 @@ export class AvataaarsAvatar extends HTMLElement {
     if (currentHash) {
       const hashConfig = getAvatarConfigFromHash(currentHash)
       Object.assign(options, hashConfig)
+    }
+
+    const isRandomizeEnabled = this.randomize
+    if (!isRandomizeEnabled) {
+      this._randomizedProps = {}
     }
 
     OPTIONS_KEYS.forEach(key => {
@@ -173,7 +193,17 @@ export class AvataaarsAvatar extends HTMLElement {
       } else if (this.hasAttribute(attrName)) {
         options[key] = this.getAttribute(attrName)
       } else if (options[key] === undefined) {
-        options[key] = DEFAULT_AVATAR_PROPS[key]
+        if (isRandomizeEnabled) {
+          if (this._randomizedProps[key] === undefined) {
+            const list = getOptionList(key)
+            if (list && list.length > 0) {
+              this._randomizedProps[key] = list[Math.floor(Math.random() * list.length)]
+            }
+          }
+          options[key] = this._randomizedProps[key]
+        } else {
+          options[key] = DEFAULT_AVATAR_PROPS[key]
+        }
       }
     })
 
@@ -340,7 +370,7 @@ OPTIONS_KEYS.forEach(key => {
 export class AvataaarsPiece extends HTMLElement {
   static get observedAttributes() {
     const attrs = OPTIONS_KEYS.map(key => key.replace(/([A-Z])/g, '-$1').toLowerCase())
-    return [...attrs, 'piece-type', 'piece-size', 'view-box', 'uid']
+    return [...attrs, 'piece-type', 'piece-size', 'view-box', 'uid', 'randomize']
   }
 
   constructor() {
@@ -348,6 +378,7 @@ export class AvataaarsPiece extends HTMLElement {
     this.attachShadow({ mode: 'open' })
     this._options = {}
     this._generatedUid = uniqueId('avatar-')
+    this._randomizedProps = {}
   }
 
   connectedCallback() {
@@ -407,8 +438,27 @@ export class AvataaarsPiece extends HTMLElement {
     }
   }
 
+  get randomize() {
+    const attr = this.getAttribute('randomize')
+    const hasSubComponent = this.querySelector('avataaars-randomize') !== null
+    return (attr !== 'false' && attr !== null) || hasSubComponent
+  }
+
+  set randomize(val) {
+    if (val) {
+      this.setAttribute('randomize', '')
+    } else {
+      this.removeAttribute('randomize')
+    }
+  }
+
   getOptions() {
     const options = {}
+    const isRandomizeEnabled = this.randomize
+    if (!isRandomizeEnabled) {
+      this._randomizedProps = {}
+    }
+
     OPTIONS_KEYS.forEach(key => {
       const attrName = key.replace(/([A-Z])/g, '-$1').toLowerCase()
       if (this._options[key] !== undefined) {
@@ -416,7 +466,17 @@ export class AvataaarsPiece extends HTMLElement {
       } else if (this.hasAttribute(attrName)) {
         options[key] = this.getAttribute(attrName)
       } else {
-        options[key] = DEFAULT_AVATAR_PROPS[key]
+        if (isRandomizeEnabled) {
+          if (this._randomizedProps[key] === undefined) {
+            const list = getOptionList(key)
+            if (list && list.length > 0) {
+              this._randomizedProps[key] = list[Math.floor(Math.random() * list.length)]
+            }
+          }
+          options[key] = this._randomizedProps[key]
+        } else {
+          options[key] = DEFAULT_AVATAR_PROPS[key]
+        }
       }
     })
     return options
@@ -552,6 +612,19 @@ OPTIONS_KEYS.forEach(key => {
   })
 })
 
+export class AvataaarsRandomize extends HTMLElement {
+  connectedCallback() {
+    if (this.parentElement && typeof this.parentElement.render === 'function') {
+      this.parentElement.render()
+    }
+  }
+  disconnectedCallback() {
+    if (this.parentElement && typeof this.parentElement.render === 'function') {
+      this.parentElement.render()
+    }
+  }
+}
+
 // Auto-register elements if we are in a browser context
 if (typeof window !== 'undefined' && window.customElements) {
   if (!window.customElements.get('avataaars-avatar')) {
@@ -559,5 +632,8 @@ if (typeof window !== 'undefined' && window.customElements) {
   }
   if (!window.customElements.get('avataaars-piece')) {
     window.customElements.define('avataaars-piece', AvataaarsPiece)
+  }
+  if (!window.customElements.get('avataaars-randomize')) {
+    window.customElements.define('avataaars-randomize', AvataaarsRandomize)
   }
 }

@@ -120,6 +120,27 @@ Use `<avataaars-piece>` to render individual avatar sub-components:
 
 ---
 
+### 3. Randomization (`randomize` & `<avataaars-randomize>`)
+
+You can enable automatic randomization of any unassigned avatar features by adding the `randomize` attribute to the element, or nesting an `<avataaars-randomize></avataaars-randomize>` sub-component inside.
+
+Any attribute or property that is explicitly defined will take precedence, and only undefined features will be randomized. The generated random properties remain visually stable (cached on the element instance) until `randomize` is disabled/removed.
+
+#### Via Attribute:
+```html
+<!-- Explicitly set clothes and background, but randomize hair, face, accessories, etc. -->
+<avataaars-avatar clothe-type="Hoodie" clothe-color="Red" backdrop-type="Circle" randomize></avataaars-avatar>
+```
+
+#### Via Nested Sub-Component:
+```html
+<avataaars-avatar>
+  <avataaars-randomize></avataaars-randomize>
+</avataaars-avatar>
+```
+
+---
+
 ## API & Configuration Options
 
 The custom elements observe attribute changes and provide matching camelCase JavaScript properties.
@@ -147,6 +168,7 @@ The custom elements observe attribute changes and provide matching camelCase Jav
 ### Utility Attributes & Properties
 - **`hash`** (`hash`): 15-character configuration string.
 - **`animated`** (`animated`): Boolean attribute. Include to trigger dynamic blinking and mouth/nose wiggle animations on the SVG.
+- **`randomize`** (`randomize`): Boolean attribute. If present, it will randomly assign values to any styling attributes that are not explicitly defined.
 - **`uid`** (`uid`): Optional override for SVG element IDs (automatically generates a unique string if omitted).
 - **`animation-delay`** (`animationDelay`): Override starting offset time for keyframe animations (automatically defaults to a random value from `0s` to `5s` so that multiple avatars on the same page do not blink in synchronised unison).
 
