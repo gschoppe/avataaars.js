@@ -6,6 +6,9 @@ This project is written entirely in **Vanilla JavaScript** using ES Modules. It 
 
 ![Avataaars Showcase](./avataaars-example.png)
 
+> [!TIP]
+> **Live Demo**: A live demo of this library is hosted on GitHub Pages at [gschoppe.github.io/avataaars.js](https://gschoppe.github.io/avataaars.js/).
+
 ---
 
 ## Features
