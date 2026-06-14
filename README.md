@@ -184,6 +184,12 @@ addPaletteColor('BACKDROP', 'SunsetGlow', {
 
 ---
 
+## Credits
+
+- Original **Avataaars** artwork created by [Pablo Stanley](https://avataaars.com/).
+
+---
+
 ## License
 
 This project is released under the MIT License.
