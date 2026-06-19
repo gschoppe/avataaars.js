@@ -7,7 +7,8 @@
   "type": "module",
   "scripts": {
     "compress": "node scripts/compress.js",
-    "build": "node scripts/compress.js && node scripts/build.js"
+    "build": "node scripts/compress.js && node scripts/build.js",
+    "dev": "npx -y http-server -p 8000"
   },
   "devDependencies": {
     "esbuild": "^0.20.0"

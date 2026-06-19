@@ -12,7 +12,7 @@ try {
     `const styleContent = ${JSON.stringify(cssContent)}`
   )
   bundleIndex = bundleIndex.replace(
-    '<link rel="stylesheet" href="${cssUrl}">',
+    /<link rel="stylesheet" href="\$\{cssUrl\}">/g,
     '<style>${styleContent}</style>'
   )
 
