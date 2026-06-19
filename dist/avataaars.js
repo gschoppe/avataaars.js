@@ -1302,7 +1302,8 @@ var AvataaarsPiece = class extends HTMLElement {
       } else if (pieceType === "graphics") {
         const gType = options.graphicType || "Bat";
         const subNode = (_d = SVG_DICTIONARY["CLOTHES"]) == null ? void 0 : _d[gType];
-        pieceHtml = renderSvgNode(subNode, uid, options);
+        const rawHtml = renderSvgNode(subNode, uid, options);
+        pieceHtml = `<g transform="translate(0, 170)">${rawHtml}</g>`;
       } else if (pieceType === "accessories" || pieceType === "accesories") {
         const accessoriesType = options.accessoriesType || "Blank";
         if (accessoriesType !== "Blank") {
@@ -1318,20 +1319,31 @@ var AvataaarsPiece = class extends HTMLElement {
       } else if (pieceType === "eyes") {
         const eyeType = options.eyeType || "Default";
         const eyeNode = (_g = SVG_DICTIONARY["EYES"]) == null ? void 0 : _g[eyeType];
-        pieceHtml = renderSvgNode(eyeNode, uid, options);
+        const rawHtml = renderSvgNode(eyeNode, uid, options);
+        pieceHtml = `<g id="${uid}-Face" transform="translate(76.000000, 82.000000)" fill="#000000">${rawHtml}</g>`;
       } else if (pieceType === "eyebrows") {
         const eyebrowType = options.eyebrowType || "Default";
         const eyebrowNode = (_h = SVG_DICTIONARY["EYEBROW"]) == null ? void 0 : _h[eyebrowType];
-        pieceHtml = renderSvgNode(eyebrowNode, uid, options);
+        const rawHtml = renderSvgNode(eyebrowNode, uid, options);
+        pieceHtml = `<g id="${uid}-Face" transform="translate(76.000000, 82.000000)" fill="#000000">${rawHtml}</g>`;
       } else if (pieceType === "mouth") {
         const mouthType = options.mouthType || "Default";
         const mouthNode = (_i = SVG_DICTIONARY["MOUTH"]) == null ? void 0 : _i[mouthType];
-        pieceHtml = renderSvgNode(mouthNode, uid, options);
+        const rawHtml = renderSvgNode(mouthNode, uid, options);
+        pieceHtml = `<g id="${uid}-Face" transform="translate(76.000000, 82.000000)" fill="#000000">${rawHtml}</g>`;
       } else if (pieceType === "nose") {
-        pieceHtml = renderSvgNode((_j = SVG_DICTIONARY["NOSE"]) == null ? void 0 : _j["Default"], uid, options);
+        const rawHtml = renderSvgNode((_j = SVG_DICTIONARY["NOSE"]) == null ? void 0 : _j["Default"], uid, options);
+        pieceHtml = `<g id="${uid}-Face" transform="translate(76.000000, 82.000000)" fill="#000000">${rawHtml}</g>`;
       } else if (pieceType === "skin") {
         const skinNode = { type: "Skin", props: {}, children: [] };
-        pieceHtml = renderSvgNode(skinNode, uid, options);
+        const skinHtml = renderSvgNode(skinNode, uid, options);
+        pieceHtml = `
+        <g id="${uid}-Body" transform="translate(32.000000, 36.000000)">
+          <use fill="#D0C6AC" href="#${uid}-path-skin" xlink:href="#${uid}-path-skin"></use>
+          ${skinHtml}
+          <path d="M156,79 L156,102 C156,132.927946 130.927946,158 100,158 C69.072054,158 44,132.927946 44,102 L44,79 L44,94 C44,124.927946 69.072054,150 100,150 C130.927946,150 156,124.927946 156,94 L156,79 Z" id="${uid}-Neck-Shadow" fill-opacity="0.100000001" fill="#000000" mask="url(#${uid}-Skin-Color-Mask)"></path>
+        </g>
+      `;
       }
       const gradMarkup = Array.from(registeredGradients.entries()).map(([gradName, config]) => {
         const tag = config.type === "radial" ? "radialGradient" : "linearGradient";
@@ -1355,7 +1367,13 @@ var AvataaarsPiece = class extends HTMLElement {
           </mask>
           ${gradMarkup}
         </defs>
-        ${pieceHtml}
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g transform="translate(-825.000000, -1100.000000)">
+            <g transform="translate(825.000000, 1100.000000)">
+              ${pieceHtml}
+            </g>
+          </g>
+        </g>
       </svg>
     `;
       this.shadowRoot.innerHTML = svgContent;

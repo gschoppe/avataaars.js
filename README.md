@@ -118,6 +118,29 @@ Use `<avataaars-piece>` to render individual avatar sub-components:
 <avataaars-piece piece-type="eyes" eye-type="Surprised" piece-size="80"></avataaars-piece>
 ```
 
+#### Layering Pieces to Compose a Full Avatar:
+
+You can construct a complete avatar by absolute-positioning individual `<avataaars-piece>` sub-components inside a relative container. Each piece is designed on the same `0 0 264 280` coordinate space, ensuring all body parts, facial features, clothes, and accessories align perfectly when layered:
+
+```html
+<div style="position: relative; width: 264px; height: 280px;">
+  <!-- Skin base layer -->
+  <avataaars-piece piece-type="skin" skin-color="Pale" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></avataaars-piece>
+  <!-- Clothing -->
+  <avataaars-piece piece-type="clothe" clothe-type="Overall" clothe-color="Red" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></avataaars-piece>
+  <!-- Eyes -->
+  <avataaars-piece piece-type="eyes" eye-type="Wink" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></avataaars-piece>
+  <!-- Eyebrows -->
+  <avataaars-piece piece-type="eyebrows" eyebrow-type="UpDown" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></avataaars-piece>
+  <!-- Nose -->
+  <avataaars-piece piece-type="nose" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></avataaars-piece>
+  <!-- Mouth -->
+  <avataaars-piece piece-type="mouth" mouth-type="Smile" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></avataaars-piece>
+  <!-- Hair / Hat -->
+  <avataaars-piece piece-type="top" top-type="ShortHairShaggy" hair-color="Brown" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></avataaars-piece>
+</div>
+```
+
 ---
 
 ### 3. Randomization (`randomize` & `<avataaars-randomize>`)
